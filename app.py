@@ -43,8 +43,8 @@ html_content = """
     </style>
 </head>
 <body>
-    <h1>Torielle Translator V1</h1>
-    <p>Upload a photo of Torielli handwriting to convert it into readable English.</p>
+    <h1>Torielle Translator v1.0</h1>
+    <p>Upload a photo of Torielli handwriting to convert it into readable English and LaTeX code.</p>
     
     <div class="upload-box">
         <input type="file" id="imageInput" accept="image/*">
@@ -78,7 +78,7 @@ html_content = """
                 return;
             }
             
-            statusDiv.innerText = "Decoding unknown Torielle hieroglyphics...converting triple-n into normal n. converting quad-m into normal m. concerting triangle into lowercase s.";
+            statusDiv.innerText = "Decoding unknown Torielle hieroglyphics... converting triple-n into normal n... converting quad-m into normal m... converting triangle into lowercase s... finishing converstions...";
             renderedDiv.style.display = "none";
             rawPre.style.display = "none";
             copyBtn.style.display = "none";
