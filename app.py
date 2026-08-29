@@ -53,7 +53,7 @@ html_content = """
     </div>
     
     <h3>Translation Output:</h3>
-    <div id="resultStatus">English translation will appear here...</div>
+    <div id="resultStatus">English translation will appear here... Does that make sense? Good.</div>
     
     <div id="renderedResult" style="display: none;"></div>
     
@@ -78,7 +78,7 @@ html_content = """
                 return;
             }
             
-            statusDiv.innerText = "Decoding unknown Torielle hieroglyphics...";
+            statusDiv.innerText = "Decoding unknown Torielle hieroglyphics...converting triple-n into normal n. converting quad-m into normal m. concerting triangle into lowercase s.";
             renderedDiv.style.display = "none";
             rawPre.style.display = "none";
             copyBtn.style.display = "none";
