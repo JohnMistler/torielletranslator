@@ -6,7 +6,6 @@ from google.genai import types
 
 app = FastAPI()
 
-# HTML page with upload UI
 html_content = """
 <!DOCTYPE html>
 <html>
@@ -15,7 +14,7 @@ html_content = """
     <style>
         body { font-family: sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; text-align: center; }
         .upload-box { border: 2px dashed #ccc; padding: 30px; border-radius: 8px; margin-bottom: 20px; }
-        #result { background: #f4f4f4; padding: 20px; border-radius: 8px; white-space: pre-wrap; text-align: left; }
+        #result { background: #f4f4f4; padding: 20px; border-radius: 8px; white-space: pre-wrap; text-align: left; min-height: 50px; }
     </style>
 </head>
 <body>
@@ -52,9 +51,13 @@ html_content = """
                     body: formData
                 });
                 const data = await response.json();
-                resultDiv.innerText = data.translation || data.error;
+                if (data.translation) {
+                    resultDiv.innerText = data.translation;
+                } else {
+                    resultDiv.innerText = "Server Error: " + (data.error || "Unknown response");
+                }
             } catch (err) {
-                resultDiv.innerText = "Error decoding image.";
+                resultDiv.innerText = "Fetch Error: " + err.message;
             }
         }
     </script>
@@ -69,10 +72,13 @@ async def home():
 @app.post("/api/translate")
 async def translate(file: UploadFile = File(...)):
     try:
+        api_key = os.environ.get("GEMINI_API_KEY")
+        if not api_key:
+            return {"error": "GEMINI_API_KEY environment variable is not set on Render!"}
+
         image_bytes = await file.read()
         
-        # Initialize Gemini API Client using GEMINI_API_KEY environment variable
-        client = genai.Client()
+        client = genai.Client(api_key=api_key)
         
         prompt = """
         You are the official 'Torielle Translator'. Transcribe the handwritten notes in this photo into plain English text.
@@ -86,12 +92,13 @@ async def translate(file: UploadFile = File(...)):
         """
         
         response = client.models.generate_content(
-            model="gemini-1.5-flash",
+            model="gemini-2.5-flash",
             contents=[
-                types.Part.from_bytes(data=image_bytes, mime_type=file.content_type),
+                types.Part.from_bytes(data=image_bytes, mime_type=file.content_type or "image/jpeg"),
                 prompt
             ]
         )
         return {"translation": response.text}
     except Exception as e:
+        print(f"Error during translation: {str(e)}")
         return {"error": str(e)}
