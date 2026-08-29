@@ -18,7 +18,7 @@ html_content = """
     </style>
 </head>
 <body>
-    <h1>Torielle Translator V1</h1>
+    <h1>Torielle Translator v.1.0</h1>
     <p>Upload a photo of Torielli's handwriting to convert it into readable English.</p>
     
     <div class="upload-box">
@@ -81,21 +81,18 @@ async def translate(file: UploadFile = File(...)):
         client = genai.Client(api_key=api_key)
         
         prompt = """
-        You are the official 'Torielle Translator'. Transcribe the Torielle language in this photo into plain English text.
+        You are the official 'Torielle Translator'. Transcribe the handwritten notes in this photo into plain English text.
         
         Known handwriting quirks for this author:
         - Lowercase 'a' looks like the Greek letter theta (θ).
         - Lowercase 's' looks like a triangle (Δ).
         - The number '9' looks like a lowercase 'g'.
-        - Author is Italian and learned to write in Italy.
-        -Author writes fast, so the letters will slowly become more and more unrecognizable. 
         
         Return ONLY the decoded English text.
         """
         
-        # Uses gemini-2.5-flash which is the standard supported model
         response = client.models.generate_content(
-            model="gemini-2.5-flash",
+            model="gemini-3.6-flash",
             contents=[
                 types.Part.from_bytes(data=image_bytes, mime_type=file.content_type or "image/jpeg"),
                 prompt
