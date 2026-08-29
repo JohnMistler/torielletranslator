@@ -103,7 +103,9 @@ html_content = """
                     renderedDiv.style.display = "block";
                     
                     if (window.MathJax) {
-                        MathJax.typesetPromise([renderedDiv]);
+                        MathJax.typesetPromise([renderedDiv]).catch((err) => {
+                            console.log("MathJax preview error:", err);
+                        });
                     }
                     
                     // Display raw code and copy button
@@ -157,10 +159,11 @@ async def translate(file: UploadFile = File(...)):
         
         Additional Instructions:
         - Analyze the context of the subject matter to intelligently fix any handwriting errors or typos.
-        - Format mathematical formulas, equations, and structured text directly in clean LaTeX syntax so it can be copied into a LaTeX editor.
+        - Format mathematical formulas, equations, and structured text using standard inline ($...$) or block ($$...$$) LaTeX expressions.
+        - Do NOT include full document wrappers like \\documentclass{article}, \\usepackage{...}, or \\begin{document}. Output only the content itself.
         - Do NOT include markdown fence wrappers like ```latex in your output.
         
-        Return ONLY the decoded English text formatted in clean LaTeX.
+        Return ONLY the decoded English text formatted in clean LaTeX math blocks.
         """
 
         candidate_models = ["gemini-3.6-flash", "gemini-1.5-flash", "gemini-1.5-pro"]
