@@ -12,36 +12,77 @@ html_content = """
 <html>
 <head>
     <title> The Official Torielle Translator</title>
+
+    <!-- MathJax Configuration and Script for Live LaTeX Rendering -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\\\(', '\\\\)']],
+                displayMath: [['$$', '$$'], ['\\\\[', '\\\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
     <style>
-        body { font-family: sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; text-align: center; }
+        body { font-family: sans-serif; max-width: 650px; margin: 40px auto; padding: 20px; text-align: center; color: #222; }
         .upload-box { border: 2px dashed #ccc; padding: 30px; border-radius: 8px; margin-bottom: 20px; }
-        #result { background: #f4f4f4; padding: 20px; border-radius: 8px; white-space: pre-wrap; text-align: left; min-height: 50px; font-family: monospace; }
+        
+        /* Box for Live Rendered LaTeX Math */
+        #renderedResult { background: #ffffff; padding: 20px; border-radius: 8px; border: 1px solid #007acc; text-align: left; min-height: 50px; margin-top: 10px; font-size: 16px; }
+        
+        /* Box for Raw LaTeX Code */
+        #rawCode { background: #f4f4f4; padding: 15px; border-radius: 8px; text-align: left; font-family: monospace; font-size: 13px; white-space: pre-wrap; overflow-x: auto; display: none; margin-top: 10px; border: 1px solid #ddd; }
+        
+        /* Copy Button Styling */
+        .copy-btn { background-color: #007acc; color: white; border: none; padding: 8px 16px; font-size: 14px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 10px; display: none; }
+        .copy-btn:hover { background-color: #005999; }
+        
+        .section-header { text-align: left; margin-top: 20px; font-weight: bold; font-size: 14px; color: #555; }
     </style>
 </head>
 <body>
-    <h1>Torielle Translator v.1.0</h1>
+    <h1>Torielle Translator V1</h1>
     <p>Upload a photo of Torielli's handwriting to convert it into readable English.</p>
     
     <div class="upload-box">
         <input type="file" id="imageInput" accept="image/*">
         <br><br>
-        <button onclick="translateImage()">Translate Handwriting</button>
+        <button onclick="translateImage()" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">Translate Handwriting</button>
     </div>
     
     <h3>Translation Output:</h3>
-    <div id="result">English translation will appear here...</div>
+    <div id="resultStatus">English translation will appear here...</div>
+    
+    <div id="renderedResult" style="display: none;"></div>
+    
+    <button id="copyBtn" class="copy-btn" onclick="copyLaTeX()">Copy Raw LaTeX Code</button>
+    
+    <div id="rawHeader" class="section-header" style="display: none;">Raw LaTeX Code:</div>
+    <pre id="rawCode"></pre>
 
     <script>
+        let currentRawLatex = "";
+
         async function translateImage() {
             const input = document.getElementById('imageInput');
-            const resultDiv = document.getElementById('result');
+            const statusDiv = document.getElementById('resultStatus');
+            const renderedDiv = document.getElementById('renderedResult');
+            const rawPre = document.getElementById('rawCode');
+            const copyBtn = document.getElementById('copyBtn');
+            const rawHeader = document.getElementById('rawHeader');
             
             if (!input.files[0]) {
                 alert('Please select an image first!');
                 return;
             }
             
-            resultDiv.innerText = "Decoding unknown Torielle hieroglyphics...";
+            statusDiv.innerText = "Decoding unknown Torielle hieroglyphics...";
+            renderedDiv.style.display = "none";
+            rawPre.style.display = "none";
+            copyBtn.style.display = "none";
+            rawHeader.style.display = "none";
             
             const formData = new FormData();
             formData.append('file', input.files[0]);
@@ -52,14 +93,40 @@ html_content = """
                     body: formData
                 });
                 const data = await response.json();
+                
                 if (data.translation) {
-                    resultDiv.innerText = data.translation;
+                    statusDiv.innerText = "Translation Complete!";
+                    currentRawLatex = data.translation;
+                    
+                    // Display rendered math using MathJax
+                    renderedDiv.innerHTML = data.translation;
+                    renderedDiv.style.display = "block";
+                    
+                    if (window.MathJax) {
+                        MathJax.typesetPromise([renderedDiv]);
+                    }
+                    
+                    // Display raw code and copy button
+                    rawPre.innerText = data.translation;
+                    rawPre.style.display = "block";
+                    copyBtn.style.display = "inline-block";
+                    rawHeader.style.display = "block";
                 } else {
-                    resultDiv.innerText = "Server Error: " + (data.error || "Unknown response");
+                    statusDiv.innerText = "Server Error: " + (data.error || "Unknown response");
                 }
             } catch (err) {
-                resultDiv.innerText = "Fetch Error: " + err.message;
+                statusDiv.innerText = "Fetch Error: " + err.message;
             }
+        }
+
+        function copyLaTeX() {
+            navigator.clipboard.writeText(currentRawLatex).then(() => {
+                const btn = document.getElementById('copyBtn');
+                btn.innerText = "Copied!";
+                setTimeout(() => { btn.innerText = "Copy Raw LaTeX Code"; }, 2000);
+            }).catch(err => {
+                alert("Failed to copy code: " + err);
+            });
         }
     </script>
 </body>
