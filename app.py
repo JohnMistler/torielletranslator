@@ -10,7 +10,7 @@ html_content = """
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Torielle Translator</title>
+    <title> The Official Torielle Translator</title>
     <style>
         body { font-family: sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; text-align: center; }
         .upload-box { border: 2px dashed #ccc; padding: 30px; border-radius: 8px; margin-bottom: 20px; }
@@ -18,8 +18,8 @@ html_content = """
     </style>
 </head>
 <body>
-    <h1>Torielle Translator 🎓</h1>
-    <p>Upload a photo of handwriting to decode it!</p>
+    <h1>Torielle Translator V1</h1>
+    <p>Upload a photo of his handwriting translate into English</p>
     
     <div class="upload-box">
         <input type="file" id="imageInput" accept="image/*">
