@@ -156,12 +156,16 @@ async def translate(file: UploadFile = File(...)):
         - Lowercase 'a' looks like the Greek letter theta (θ).
         - Lowercase 's' looks like a triangle (Δ).
         - The number '9' looks like a lowercase 'g'.
+        - the number 4 sometimes looks like a european 4. Not always.
+        - Most common lowercase letters are cursive. 
+        - Additional notes are normally in all caps and print, not cursive.
         
         Additional Instructions:
         - Analyze the context of the subject matter to intelligently fix any handwriting errors or typos.
         - Format mathematical formulas, equations, and structured text using standard inline ($...$) or block ($$...$$) LaTeX expressions.
         - Do NOT include full document wrappers like \\documentclass{article}, \\usepackage{...}, or \\begin{document}. Output only the content itself.
         - Do NOT include markdown fence wrappers like ```latex in your output.
+        
         
         Return ONLY the decoded English text formatted in clean LaTeX math blocks.
         """
