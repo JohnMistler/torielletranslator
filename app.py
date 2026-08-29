@@ -81,7 +81,7 @@ async def translate(file: UploadFile = File(...)):
         client = genai.Client(api_key=api_key)
         
         prompt = """
-        You are the official 'Torielle Translator'. Transcribe the handwritten notes in this photo into plain English text.
+        You are the official 'Torielle Translator'. Transcribe the Torielle language in this photo into plain English text.
         
         Known handwriting quirks for this author:
         - Lowercase 'a' looks like the Greek letter theta (θ).
@@ -91,6 +91,7 @@ async def translate(file: UploadFile = File(...)):
         Return ONLY the decoded English text.
         """
         
+        # Uses gemini-2.5-flash which is the standard supported model
         response = client.models.generate_content(
             model="gemini-2.5-flash",
             contents=[
