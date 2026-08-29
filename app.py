@@ -15,11 +15,11 @@ html_content = """
     <style>
         body { font-family: sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; text-align: center; }
         .upload-box { border: 2px dashed #ccc; padding: 30px; border-radius: 8px; margin-bottom: 20px; }
-        #result { background: #f4f4f4; padding: 20px; border-radius: 8px; white-space: pre-wrap; text-align: left; min-height: 50px; }
+        #result { background: #f4f4f4; padding: 20px; border-radius: 8px; white-space: pre-wrap; text-align: left; min-height: 50px; font-family: monospace; }
     </style>
 </head>
 <body>
-    <h1>Torielle Translator v.1</h1>
+    <h1>Torielle Translator V1</h1>
     <p>Upload a photo of Torielli's handwriting to convert it into readable English.</p>
     
     <div class="upload-box">
@@ -88,15 +88,18 @@ async def translate(file: UploadFile = File(...)):
         - Lowercase 's' looks like a triangle (Δ).
         - The number '9' looks like a lowercase 'g'.
         
-        Return ONLY the decoded English text.
+        Additional Instructions:
+        - Analyze the context of the subject matter to intelligently fix any handwriting errors or typos.
+        - Format mathematical formulas, equations, and structured text directly in clean LaTeX syntax so it can be copied into a LaTeX editor.
+        - Do NOT include markdown fence wrappers like ```latex in your output.
+        
+        Return ONLY the decoded English text formatted in clean LaTeX.
         """
 
-        # List of models to attempt in order if high demand occurs
         candidate_models = ["gemini-3.6-flash", "gemini-1.5-flash", "gemini-1.5-pro"]
         
         last_error = None
         for model in candidate_models:
-            # Try each model up to 2 times before falling back to the next model
             for attempt in range(2):
                 try:
                     response = client.models.generate_content(
@@ -109,12 +112,11 @@ async def translate(file: UploadFile = File(...)):
                     return {"translation": response.text}
                 except Exception as model_err:
                     last_error = model_err
-                    # If 503 high demand error, pause briefly and retry
                     if "503" in str(model_err) or "UNAVAILABLE" in str(model_err):
                         time.sleep(1.5)
                         continue
                     else:
-                        break # Try next model if it's a non-503 error
+                        break
         
         return {"error": f"Google AI services are temporarily busy. Details: {str(last_error)}"}
 
