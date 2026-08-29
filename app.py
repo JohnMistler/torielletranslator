@@ -6,7 +6,7 @@ from google.genai import types
 
 app = FastAPI()
 
-# HTML page with simple upload UI
+# HTML page with upload UI
 html_content = """
 <!DOCTYPE html>
 <html>
@@ -86,7 +86,7 @@ async def translate(file: UploadFile = File(...)):
         """
         
         response = client.models.generate_content(
-            model="gemini-3.7-flash",
+            model="gemini-1.5-flash",
             contents=[
                 types.Part.from_bytes(data=image_bytes, mime_type=file.content_type),
                 prompt
