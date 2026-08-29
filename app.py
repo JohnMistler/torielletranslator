@@ -87,6 +87,8 @@ async def translate(file: UploadFile = File(...)):
         - Lowercase 'a' looks like the Greek letter theta (θ).
         - Lowercase 's' looks like a triangle (Δ).
         - The number '9' looks like a lowercase 'g'.
+        - Author is Italian and learned to write in Italy.
+        -Author writes fast, so the letters will slowly become more and more unrecognizable. 
         
         Return ONLY the decoded English text.
         """
