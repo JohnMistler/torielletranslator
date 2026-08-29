@@ -19,7 +19,7 @@ html_content = """
     </style>
 </head>
 <body>
-    <h1>Torielle Translator V1</h1>
+    <h1>Torielle Translator v.1.0</h1>
     <p>Upload a photo of Torielli's handwriting to convert it into readable English.</p>
     
     <div class="upload-box">
