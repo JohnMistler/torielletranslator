@@ -44,7 +44,7 @@ html_content = """
 </head>
 <body>
     <h1>Torielle Translator V1</h1>
-    <p>Upload a photo of Torielli's handwriting to convert it into readable English.</p>
+    <p>Upload a photo of Torielli handwriting to convert it into readable English.</p>
     
     <div class="upload-box">
         <input type="file" id="imageInput" accept="image/*">
