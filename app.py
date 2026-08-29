@@ -19,7 +19,7 @@ html_content = """
 </head>
 <body>
     <h1>Torielle Translator V1</h1>
-    <p>Upload a photo of his handwriting translate into English</p>
+    <p>Upload a photo of Torielli's handwriting to convert it into readable English.</p>
     
     <div class="upload-box">
         <input type="file" id="imageInput" accept="image/*">
@@ -28,7 +28,7 @@ html_content = """
     </div>
     
     <h3>Translation Output:</h3>
-    <div id="result">Translation will appear here...</div>
+    <div id="result">English translation will appear here...</div>
 
     <script>
         async function translateImage() {
@@ -40,7 +40,7 @@ html_content = """
                 return;
             }
             
-            resultDiv.innerText = "Decoding professor's hieroglyphics...";
+            resultDiv.innerText = "Decoding unknown Torielle hieroglyphics...";
             
             const formData = new FormData();
             formData.append('file', input.files[0]);
