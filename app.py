@@ -1,4 +1,5 @@
 import os
+import time
 from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import HTMLResponse
 from google import genai
@@ -18,7 +19,7 @@ html_content = """
     </style>
 </head>
 <body>
-    <h1>Torielle Translator v.1.0</h1>
+    <h1>Torielle Translator v.1</h1>
     <p>Upload a photo of Torielli's handwriting to convert it into readable English.</p>
     
     <div class="upload-box">
@@ -77,7 +78,6 @@ async def translate(file: UploadFile = File(...)):
             return {"error": "GEMINI_API_KEY environment variable is not set on Render!"}
 
         image_bytes = await file.read()
-        
         client = genai.Client(api_key=api_key)
         
         prompt = """
@@ -90,15 +90,34 @@ async def translate(file: UploadFile = File(...)):
         
         Return ONLY the decoded English text.
         """
+
+        # List of models to attempt in order if high demand occurs
+        candidate_models = ["gemini-3.6-flash", "gemini-1.5-flash", "gemini-1.5-pro"]
         
-        response = client.models.generate_content(
-            model="gemini-3.6-flash",
-            contents=[
-                types.Part.from_bytes(data=image_bytes, mime_type=file.content_type or "image/jpeg"),
-                prompt
-            ]
-        )
-        return {"translation": response.text}
+        last_error = None
+        for model in candidate_models:
+            # Try each model up to 2 times before falling back to the next model
+            for attempt in range(2):
+                try:
+                    response = client.models.generate_content(
+                        model=model,
+                        contents=[
+                            types.Part.from_bytes(data=image_bytes, mime_type=file.content_type or "image/jpeg"),
+                            prompt
+                        ]
+                    )
+                    return {"translation": response.text}
+                except Exception as model_err:
+                    last_error = model_err
+                    # If 503 high demand error, pause briefly and retry
+                    if "503" in str(model_err) or "UNAVAILABLE" in str(model_err):
+                        time.sleep(1.5)
+                        continue
+                    else:
+                        break # Try next model if it's a non-503 error
+        
+        return {"error": f"Google AI services are temporarily busy. Details: {str(last_error)}"}
+
     except Exception as e:
         print(f"Error during translation: {str(e)}")
         return {"error": str(e)}
