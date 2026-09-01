@@ -11,7 +11,7 @@ html_content = """
 <!DOCTYPE html>
 <html>
 <head>
-    <title> The Official Torielle Translator</title>
+    <title> The Official Torielli Translator</title>
 
     <!-- MathJax Configuration and Script for Live LaTeX Rendering -->
     <script>
@@ -43,7 +43,7 @@ html_content = """
     </style>
 </head>
 <body>
-    <h1>Torielle Translator v1.0</h1>
+    <h1>Torielli Translator v1.0</h1>
     <p>Upload a photo of Torielli handwriting to convert it into readable English and LaTeX code.</p>
     
     <div class="upload-box">
@@ -78,7 +78,7 @@ html_content = """
                 return;
             }
             
-            statusDiv.innerText = "Decoding unknown Torielle hieroglyphics... converting triple-n into normal n... converting quad-m into normal m... converting triangle into lowercase s... finishing converstions...";
+            statusDiv.innerText = "Decoding unknown Torielli hieroglyphics... converting triple-n into normal n... converting quad-m into normal m... converting triangle into lowercase s... finishing converstions...";
             renderedDiv.style.display = "none";
             rawPre.style.display = "none";
             copyBtn.style.display = "none";
@@ -150,7 +150,7 @@ async def translate(file: UploadFile = File(...)):
         client = genai.Client(api_key=api_key)
         
         prompt = """
-        You are the official 'Torielle Translator'. Transcribe the handwritten notes in this photo into plain English text.
+        You are the official 'Torielli Translator'. Transcribe the handwritten notes in this photo into plain English text.
         
         Known handwriting quirks for this author:
         - Lowercase 'a' looks like the Greek letter theta (θ).
